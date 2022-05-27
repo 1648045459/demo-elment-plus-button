@@ -1,7 +1,6 @@
 import { AnyObject } from "./types";
 import rand from "csprng";
 import bs58 from "base58check";
-import * as asmCrypto from "asmcrypto.js";
 // import { useI18n } from 'vue-i18n';
 // const { t } = useI18n();
 
@@ -318,55 +317,9 @@ export function getNavigatorLangNew() {
 
 
 
-/**
- * @Descripttion: 对随机数进行两次sha256加密
- * @param {*} salt 随机数
- * @return {*}
- */
-export function Sha256SaltRandom(salt: string) {
-  // 第一次SHA256
-  let fillerWord = "c"; //填充字
-  let msg = `chaindisk${fillerWord}${salt}`;
-  let msgBytes = asmCrypto.string_to_bytes(msg);
-  let sha256 = new asmCrypto.Sha256();
-  let result = sha256.process(msgBytes).finish().result;
-  if (result) {
-    // 第二次SHA256
-    let sha256_2 = new asmCrypto.Sha256();
-    let result_2 = sha256_2.process(result).finish().result;
-    return result_2;
-  } else {
-    return null
-  }
 
-}
 
-/**
- * @Descripttion: 用PBKDF2_HMAC_SHA512 对加密随机数，密码加密
- * @param {*} salt  加密随机数
- * @param {*} pass  密码
- * @return {*}startKey unit8array, endKey 16进制
- */
-export function onPBKDF2_HMAC_SHA512(salt: Uint8Array, pass: string) {
-  let obj = {
-    password: asmCrypto.string_to_bytes(pass),
-    salt: salt,
-    count: 100000,
-    dklen: 64 // 64byte
-  };
 
-  // 512bits = 64byte   1byte = 8bits    16byte = 128bite
-  let unit8Array = asmCrypto.Pbkdf2HmacSha512(
-    obj.password,
-    obj.salt,
-    obj.count,
-    obj.dklen
-  );
-  let startKey = unit8Array.slice(0, 16); // 前128bits派生加密密钥
-  let endKey = unit8Array.slice(unit8Array.length - 16); // 后128bits派生认证密钥
-  let endKeyStr = asmCrypto.bytes_to_hex(endKey);
-  return { startKey, endKeyStr };
-}
 
 /**
  * @Descripttion: unit8array => base58

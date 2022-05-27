@@ -14,8 +14,6 @@ import vueI18n from './locales/index'
 // 二维码插件
 import QrcodeVue from 'qrcode.vue'
 import * as ElIconModules from '@element-plus/icons-vue';
-// 扫码
-import { QrStream } from 'vue3-qr-reader';
 
 import { List, Button } from 'vant';
 
@@ -81,16 +79,6 @@ requireLayout.keys().forEach(fileName => {
 })
 // ----- end （注册常用组件）
 
-// web3-------
-import Web3 from "web3";
-let web3
-if (typeof web3 !== "undefined" && web3) {
-  web3 = new Web3(web3['currentProvider']);
-} else {
-  web3 = new Web3(new Web3.providers.HttpProvider((window as any).WEB3_PROVIDER_HTTP));
-}
-app.config.globalProperties.$web3 = web3  //全局变量
-// ----- end (web3)
 
 document.title = (window as any).TITLE
 
@@ -101,7 +89,6 @@ Object.keys(ElIconModules).forEach(function (key) {
 // 全局设置 svg 组件
 app.component('qrcode-vue', QrcodeVue)
 
-app.component('qr-stream', QrStream)
 app.use(List);
 app.use(Button);
 app.use(ElementPlus, { size: 'large', zIndex: 3000 })
